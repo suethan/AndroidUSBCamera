@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dreamguard.api"
+    android:versionCode="2"
+    android:versionName="1.1" >
+    <!--package="com.serenegiant.uvccamera"-->
+</manifest>
