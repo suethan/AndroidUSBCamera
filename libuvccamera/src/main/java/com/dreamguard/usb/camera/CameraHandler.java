@@ -20,6 +20,7 @@ import android.view.Surface;
 
 import com.dreamguard.api.R;
 import com.dreamguard.usb.detect.USBMonitor;
+import com.dreamguard.util.ImageProc;
 import com.dreamguard.widget.CameraViewInterface;
 
 import java.io.BufferedOutputStream;
@@ -57,7 +58,7 @@ public class CameraHandler extends Handler {
      * {@link UVCCamera#setPreviewSize(int, int, int)} throw exception
      * 0:YUYV, other:MJPEG
      */
-    private static final int PREVIEW_MODE = 0;
+    private static final int PREVIEW_MODE = 1;
 
 
     private static final int MSG_OPEN = 0;
@@ -263,7 +264,7 @@ public class CameraHandler extends Handler {
                 }
             }
             if (mUVCCamera != null) {
-                mUVCCamera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_RGB565);
+                mUVCCamera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_YUV420SP);
                 mUVCCamera.setPreviewDisplay(surface);
                 mUVCCamera.startPreview();
             }
@@ -280,7 +281,7 @@ public class CameraHandler extends Handler {
         }
 
         public void handleCaptureStill() {
-            isCapture = true;
+            isCaptureStill = true;
             if (DEBUG) Log.v(TAG_THREAD, "handleCaptureStill:");
         }
 
@@ -319,50 +320,6 @@ public class CameraHandler extends Handler {
                 Looper.myLooper().quit();
         }
 
-        private boolean isCapture = false;
-        // if you need frame data as ByteBuffer on Java side, you can use this callback method with UVCCamera#setFrameCallback
-        private final IFrameCallback mIFrameCallback = new IFrameCallback() {
-            @Override
-            public void onFrame(final ByteBuffer frame) {
-                Log.d(TAG,"onFrame");
-                if(isCapture) {
-                    mSoundPool.play(mSoundId, 0.2f, 0.2f, 0, 0, 1.0f);	// play shutter sound
-                    Log.d(TAG,"onFrame Capture still");
-                    try {
-                        // get buffered output stream for saving a captured still image as a file on external storage.
-                        // the file name is came from current time.
-                        // You should use extension name as same as CompressFormat when calling Bitmap#compress.
-                        final File outputFile = new File(Environment.getExternalStorageDirectory().getPath() + "/K3DX/" + System.currentTimeMillis() + ".jpg");
-                        final BufferedOutputStream os = new BufferedOutputStream(new FileOutputStream(outputFile));
-                        try {
-                            try {
-                                Bitmap bitmap = Bitmap.createBitmap(PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.RGB_565);
-                                bitmap.copyPixelsFromBuffer(frame);
-                                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
-                                os.flush();
-                                mHandler.sendMessage(mHandler.obtainMessage(MSG_MEDIA_UPDATE, outputFile.getPath()));
-                            } catch (final IOException e) {
-                                Log.e(TAG,"onFrame Capture still Error");
-                            } catch (Exception e){
-                                Log.e(TAG,"onFrame Capture still Error Exception1");
-                            }
-                        } finally {
-                            os.close();
-                        }
-                    } catch (final FileNotFoundException e) {
-                        Log.e(TAG,"onFrame Capture still Error FileNotFoundException");
-
-                    } catch (final IOException e) {
-                        Log.e(TAG,"onFrame Capture still Error IOException");
-                    } catch (Exception e){
-                        Log.e(TAG,"onFrame Capture still Error Exception");
-                    }
-                    isCapture = false;
-                }
-            }
-        };
-
-
         /**
          * prepare and load shutter sound for still image capturing
          */
@@ -388,6 +345,42 @@ public class CameraHandler extends Handler {
             mSoundPool = new SoundPool(2, streamType, 0);
             mSoundId = mSoundPool.load(context, R.raw.camera_click, 1);
         }
+
+        private void captureStill(ByteBuffer frame){
+            Log.d(TAG,"onFrame Capture still");
+            mSoundPool.play(mSoundId, 0.2f, 0.2f, 0, 0, 1.0f);
+            File outputFile = null;
+            BufferedOutputStream os = null;
+            int rgb[] = new int[PREVIEW_WIDTH*PREVIEW_HEIGHT];
+            try {
+                outputFile = new File(Environment.getExternalStorageDirectory().getPath() + "/K3DX/" + System.currentTimeMillis() + ".jpg");
+                os = new BufferedOutputStream(new FileOutputStream(outputFile));
+                byte buf[] = new byte[PREVIEW_WIDTH*PREVIEW_HEIGHT*3/2];
+                frame.get(buf);
+                ImageProc.decodeYUV420SP(rgb,buf,PREVIEW_WIDTH,PREVIEW_HEIGHT);
+                Bitmap bitmap = Bitmap.createBitmap(rgb,PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                os.flush();
+                os.close();
+                mHandler.sendMessage(mHandler.obtainMessage(MSG_MEDIA_UPDATE, outputFile.getPath()));
+            } catch (Exception e){
+                Log.e(TAG,"onFrame Capture still Error Exception");
+            }
+
+            isCaptureStill = false;
+        }
+
+        private boolean isCaptureStill = false;
+        // if you need frame data as ByteBuffer on Java side, you can use this callback method with UVCCamera#setFrameCallback
+        private final IFrameCallback mIFrameCallback = new IFrameCallback() {
+            @Override
+            public void onFrame(final ByteBuffer frame) {
+                Log.d(TAG,"onFrame");
+                if(isCaptureStill) {
+                    captureStill(frame);
+                }
+            }
+        };
 
         @Override
         public void run() {

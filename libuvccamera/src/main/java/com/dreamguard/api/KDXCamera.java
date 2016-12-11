@@ -55,16 +55,19 @@ public class KDXCamera {
         mHandler = null;
     }
 
-    public void setPreviewSize(int width,int height){
+    public void setPreviewSize(int width, int height) {
         CameraHandler.PREVIEW_WIDTH = width;
         CameraHandler.PREVIEW_HEIGHT = height;
     }
 
     public boolean open(int id) {
         Log.v(TAG, "open :");
-
         final List<DeviceFilter> filter = DeviceFilter.getDeviceFilters(context, R.xml.device_filter);
-        UsbDevice device = mUSBMonitor.getDeviceList(filter.get(0)).get(id);
+        List<UsbDevice> deviceList = mUSBMonitor.getDeviceList(filter.get(0));
+        UsbDevice device = null;
+        if (deviceList.size() > id) {
+            device = deviceList.get(id);
+        }
         if (device != null) {
             Log.v(TAG, "open :" + device.toString());
             mUSBMonitor.requestPermission(device);
