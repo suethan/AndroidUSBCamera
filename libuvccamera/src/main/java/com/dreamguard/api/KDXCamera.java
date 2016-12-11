@@ -91,6 +91,17 @@ public class KDXCamera {
         mHandler.captureStill();
     }
 
+    public void startRecording(){
+        mHandler.startRecording();
+    }
+
+    public void stopRecording(){
+        mHandler.stopRecording();
+    }
+
+    public boolean isRecording(){
+        return mHandler.isRecording();
+    }
     private final USBMonitor.OnDeviceConnectListener mOnDeviceConnectListener = new USBMonitor.OnDeviceConnectListener() {
         @Override
         public void onAttach(final UsbDevice device) {

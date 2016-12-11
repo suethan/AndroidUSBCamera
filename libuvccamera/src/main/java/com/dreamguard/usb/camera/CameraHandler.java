@@ -19,6 +19,7 @@ import android.view.Surface;
 
 
 import com.dreamguard.api.R;
+import com.dreamguard.encoder.VideoEncoderFromBuffer;
 import com.dreamguard.usb.detect.USBMonitor;
 import com.dreamguard.util.ImageProc;
 import com.dreamguard.widget.CameraViewInterface;
@@ -182,7 +183,8 @@ public class CameraHandler extends Handler {
         private final Object mSync = new Object();
         private final WeakReference<Context> mWeakParent;
         private final WeakReference<CameraViewInterface> mWeakCameraView;
-        private boolean mIsRecording;
+        private boolean mIsRecording = false;
+        private boolean isCaptureStill = false;
         /**
          * shutter sound
          */
@@ -197,11 +199,15 @@ public class CameraHandler extends Handler {
          * muxer for audio/video recording
          */
 
+        private VideoEncoderFromBuffer videoEncoder = null;
+
         private CameraThread(final Context parent, final CameraViewInterface cameraView) {
             super("CameraThread");
             mWeakParent = new WeakReference<Context>(parent);
             mWeakCameraView = new WeakReference<CameraViewInterface>(cameraView);
             loadSutterSound(parent);
+            videoEncoder = new VideoEncoderFromBuffer(PREVIEW_WIDTH,
+                    PREVIEW_HEIGHT);
         }
 
         @Override
@@ -227,13 +233,12 @@ public class CameraHandler extends Handler {
         }
 
         public boolean isRecording() {
-            return false;
-            //return (mUVCCamera != null);
+            return mIsRecording;
         }
 
         public void handleOpen(final USBMonitor.UsbControlBlock ctrlBlock) {
             if (DEBUG) Log.v(TAG_THREAD, "handleOpen:");
-            handleClose();
+//            handleClose();
             mUVCCamera = new UVCCamera();
             mUVCCamera.open(ctrlBlock);
             if (DEBUG) Log.i(TAG, "supportedSize:" + mUVCCamera.getSupportedSize());
@@ -287,12 +292,15 @@ public class CameraHandler extends Handler {
 
         public void handleStartRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
-
-
+            mIsRecording = true;
         }
 
         public void handleStopRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStopRecording:");
+            if(mIsRecording) {
+                videoEncoder.close();
+            }
+            mIsRecording = false;
         }
 
         public void handleUpdateMedia(final String path) {
@@ -370,7 +378,6 @@ public class CameraHandler extends Handler {
             isCaptureStill = false;
         }
 
-        private boolean isCaptureStill = false;
         // if you need frame data as ByteBuffer on Java side, you can use this callback method with UVCCamera#setFrameCallback
         private final IFrameCallback mIFrameCallback = new IFrameCallback() {
             @Override
@@ -378,6 +385,14 @@ public class CameraHandler extends Handler {
                 Log.d(TAG,"onFrame");
                 if(isCaptureStill) {
                     captureStill(frame);
+                }
+                if(isRecording()){
+                    long startTime = System.currentTimeMillis();
+                    byte buf[] = new byte[PREVIEW_WIDTH*PREVIEW_HEIGHT*3/2];
+                    frame.get(buf);
+                    videoEncoder.encodeFrame(buf);
+                    long endTime = System.currentTimeMillis();
+                    Log.i(TAG, Integer.toString((int)(endTime-startTime)) + "ms");
                 }
             }
         };

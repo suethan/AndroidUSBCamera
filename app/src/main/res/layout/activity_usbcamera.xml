@@ -13,4 +13,10 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
+    <Button
+        android:id="@+id/record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/camera"/>
+
 </RelativeLayout>

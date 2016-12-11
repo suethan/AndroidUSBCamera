@@ -3,6 +3,7 @@ package com.dreamguard.androidusbcamera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.dreamguard.api.KDXCamera;
@@ -14,18 +15,21 @@ import com.dreamguard.widget.CameraViewInterface;
 public class USBCameraActivity extends AppCompatActivity {
 
 
-    private static final int PREVIEW_WIDTH = 2560;
+    private static final int PREVIEW_WIDTH = 640;
 
-    private static final int PREVIEW_HEIGHT = 720;
+    private static final int PREVIEW_HEIGHT = 480;
 
     private CameraViewInterface mUVCCameraView;
 
     private KDXCamera camera;
+
+    private Button record;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usbcamera);
         final View view = findViewById(R.id.camera_view);
+        record = (Button) findViewById(R.id.record);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,6 +51,17 @@ public class USBCameraActivity extends AppCompatActivity {
                     return true;
                 }
                 return false;
+            }
+        });
+        record.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(camera.isCameraOpened() && !camera.isRecording()){
+                    camera.startRecording();
+                }
+                if(camera.isCameraOpened() && camera.isRecording()){
+                    camera.stopRecording();
+                }
             }
         });
         mUVCCameraView = (CameraViewInterface)view;
