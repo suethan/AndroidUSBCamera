@@ -8,6 +8,9 @@ import android.widget.Toast;
 import com.dreamguard.api.KDXCamera;
 import com.dreamguard.widget.CameraViewInterface;
 
+/**
+ *  create by hailin.dai 2016.12.10.
+ */
 public class USBCameraActivity extends AppCompatActivity {
 
 
