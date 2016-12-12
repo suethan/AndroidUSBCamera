@@ -85,13 +85,6 @@ public class VideoEncoderFromBuffer {
         String fileName = DEBUG_FILE_NAME_BASE + this.mWidth + "x"
                 + this.mHeight + ".mp4";
         Log.i(TAG, "videofile: " + fileName);
-//        try {
-//            mFileOutputStream = new FileOutputStream(fileName);
-//        } catch (IOException e) {
-//            System.out.println(e);
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
 
         mStartTime = System.nanoTime();
 
@@ -197,19 +190,6 @@ public class VideoEncoderFromBuffer {
                     if (VERBOSE) {
                         Log.d(TAG, "sent " + mBufferInfo.size + " bytes to muxer");
                     }
-
-                    //					write raw data
-//                    byte[] outData = new byte[mBufferInfo.size];
-//                    outputBuffer.get(outData);
-//                    outputBuffer.position(mBufferInfo.offset);
-//
-//                    try {
-//                        mFileOutputStream.write(outData);
-//                        Log.i(TAG, "output data size -- > " + outData.length);
-//                    } catch (IOException ioe) {
-//                        Log.w(TAG, "failed writing debug data to file");
-//                        throw new RuntimeException(ioe);
-//                    }
                 }
 
                 mMediaCodec.releaseOutputBuffer(outputBufferIndex, false);

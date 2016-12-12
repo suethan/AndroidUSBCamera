@@ -1,4 +1,4 @@
-package com.wztech.camera.api;
+package com.dreamguard.api;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
