@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.dreamguard.api.KDXCamera;
+import com.wztech.camera.api.KDXCamera;
 import com.dreamguard.widget.CameraViewInterface;
 
 /**
@@ -15,9 +15,9 @@ import com.dreamguard.widget.CameraViewInterface;
 public class USBCameraActivity extends AppCompatActivity {
 
 
-    private static final int PREVIEW_WIDTH = 640;
+    private static final int PREVIEW_WIDTH = 2560;
 
-    private static final int PREVIEW_HEIGHT = 480;
+    private static final int PREVIEW_HEIGHT = 720;
 
     private CameraViewInterface mUVCCameraView;
 
@@ -37,6 +37,10 @@ public class USBCameraActivity extends AppCompatActivity {
                     boolean ret = camera.open(0);
                     if(!ret){
                         Toast.makeText(USBCameraActivity.this, "NO_USB_DEVICE", Toast.LENGTH_SHORT).show();
+                    }else {
+                        camera.setPreviewSize(PREVIEW_WIDTH,PREVIEW_HEIGHT);
+                        camera.setPreviewTexture(mUVCCameraView.getSurfaceTexture());
+                        camera.startPreview();
                     }
                 }else {
                     camera.close();
@@ -67,8 +71,8 @@ public class USBCameraActivity extends AppCompatActivity {
         mUVCCameraView = (CameraViewInterface)view;
         mUVCCameraView.setAspectRatio(PREVIEW_WIDTH/2 / (float)PREVIEW_HEIGHT);
         camera = new KDXCamera();
-        camera.init(this,mUVCCameraView);
-        camera.setPreviewSize(PREVIEW_WIDTH,PREVIEW_HEIGHT);
+        camera.init(this);
+
     }
 
     private void hideSystemUI() {
@@ -84,13 +88,11 @@ public class USBCameraActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        mUVCCameraView.onResume();
         hideSystemUI();
     }
 
     @Override
     public void onPause() {
-        mUVCCameraView.onPause();
         camera.close();
         super.onPause();
     }

@@ -115,7 +115,7 @@ public class VideoEncoderFromBuffer {
     public void encodeFrame(byte[] input/* , byte[] output */) {
         Log.i(TAG, "encodeFrame()");
         long encodedSize = 0;
-//        NV21toI420SemiPlanar(input, mFrameData, this.mWidth, this.mHeight);
+        NV21toI420SemiPlanar(input, mFrameData, this.mWidth, this.mHeight);
 
         ByteBuffer[] inputBuffers = mMediaCodec.getInputBuffers();
         ByteBuffer[] outputBuffers = mMediaCodec.getOutputBuffers();
@@ -128,9 +128,9 @@ public class VideoEncoderFromBuffer {
             Log.i(TAG, "resentationTime: " + ptsUsec);
             ByteBuffer inputBuffer = inputBuffers[inputBufferIndex];
             inputBuffer.clear();
-            inputBuffer.put(input);
+            inputBuffer.put(mFrameData);
             mMediaCodec.queueInputBuffer(inputBufferIndex, 0,
-                    input.length, System.nanoTime() / 1000, 0);
+                    mFrameData.length, System.nanoTime() / 1000, 0);
         } else {
             // either all in use, or we timed out during initial setup
             if (VERBOSE)

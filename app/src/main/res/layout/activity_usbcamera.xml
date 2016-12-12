@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context="com.dreamguard.androidusbcamera.USBCameraActivity">
 
-    <com.dreamguard.widget.UVCCameraTextureView
+    <com.wztech.camera.widget.KDXCameraView
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

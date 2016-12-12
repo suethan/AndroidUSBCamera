@@ -1,4 +1,4 @@
-package com.dreamguard.api;
+package com.wztech.camera.api;
 
 import android.content.Context;
 import android.graphics.SurfaceTexture;
@@ -7,11 +7,11 @@ import android.util.Log;
 import android.view.Surface;
 import android.widget.Toast;
 
+import com.dreamguard.api.R;
 import com.dreamguard.usb.camera.CameraHandler;
 import com.dreamguard.usb.detect.DeviceFilter;
 import com.dreamguard.usb.detect.USBMonitor;
 import com.dreamguard.usb.detect.USBStatus;
-import com.dreamguard.widget.CameraViewInterface;
 
 
 import java.util.List;
@@ -34,16 +34,17 @@ public class KDXCamera {
 
     private Context context;
 
-    private CameraViewInterface cameraView;
+    private SurfaceTexture mSurfaceTexture;
 
     private USBStatus usbStatus = USBStatus.DETACHED;
 
-    public void init(Context context, CameraViewInterface cameraView) {
+    private final Object mSync = new Object();
+
+    public void init(Context context) {
         Log.v(TAG, "init :");
         this.context = context;
-        this.cameraView = cameraView;
         mUSBMonitor = new USBMonitor(context, mOnDeviceConnectListener);
-        mHandler = CameraHandler.createHandler(context, cameraView);
+        mHandler = CameraHandler.createHandler(context);
         mUSBMonitor.register();
 
     }
@@ -58,6 +59,14 @@ public class KDXCamera {
     public void setPreviewSize(int width, int height) {
         CameraHandler.PREVIEW_WIDTH = width;
         CameraHandler.PREVIEW_HEIGHT = height;
+    }
+
+    public void setPreviewTexture(SurfaceTexture surfaceTexture){
+        mSurfaceTexture = surfaceTexture;
+    }
+
+    public void startPreview(){
+
     }
 
     public boolean open(int id) {
@@ -116,8 +125,7 @@ public class KDXCamera {
             Toast.makeText(context, "onConnect", Toast.LENGTH_SHORT).show();
             usbStatus = USBStatus.CONNECTED;
             mHandler.openCamera(ctrlBlock);
-            final SurfaceTexture st = cameraView.getSurfaceTexture();
-            mHandler.startPreview(new Surface(st));
+            mHandler.startPreview(new Surface(mSurfaceTexture));
         }
 
         @Override

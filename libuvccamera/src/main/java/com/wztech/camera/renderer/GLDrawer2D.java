@@ -1,4 +1,4 @@
-package com.dreamguard.renderer;
+package com.wztech.camera.renderer;
 /*
  * UVCCamera
  * library and sample to access to UVC web camera on non-rooted Android device
@@ -57,6 +57,12 @@ public class GLDrawer2D {
 		+ "varying highp vec2 vTextureCoord;\n"
 		+ "void main() {\n"
 		+ "		vec2 tc = vTextureCoord;\n"
+		+ "		float xx = floor(gl_FragCoord.x);\n"
+		+ "		if(mod(xx,2.0) <= 0.0001){\n"
+		+ "			tc.s = tc.s*0.5; \n"
+		+ "		}else{\n"
+		+ "			tc.s = tc.s*0.5  + 0.5;\n"
+		+ "		}\n"
 		+ "  gl_FragColor = texture2D(sTexture, tc);\n"
 		+ "}";
 	private static final float[] VERTICES = { 1.0f, 1.0f, -1.0f, 1.0f, 1.0f, -1.0f, -1.0f, -1.0f };

@@ -22,7 +22,6 @@ import com.dreamguard.api.R;
 import com.dreamguard.encoder.VideoEncoderFromBuffer;
 import com.dreamguard.usb.detect.USBMonitor;
 import com.dreamguard.util.ImageProc;
-import com.dreamguard.widget.CameraViewInterface;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -74,8 +73,8 @@ public class CameraHandler extends Handler {
 
     private final WeakReference<CameraThread> mWeakThread;
 
-    public static final CameraHandler createHandler(final Context parent, final CameraViewInterface cameraView) {
-        final CameraThread thread = new CameraThread(parent, cameraView);
+    public static final CameraHandler createHandler(final Context parent) {
+        final CameraThread thread = new CameraThread(parent);
         thread.start();
         return thread.getHandler();
     }
@@ -182,7 +181,6 @@ public class CameraHandler extends Handler {
         private static final String TAG_THREAD = "CameraThread";
         private final Object mSync = new Object();
         private final WeakReference<Context> mWeakParent;
-        private final WeakReference<CameraViewInterface> mWeakCameraView;
         private boolean mIsRecording = false;
         private boolean isCaptureStill = false;
         /**
@@ -201,10 +199,9 @@ public class CameraHandler extends Handler {
 
         private VideoEncoderFromBuffer videoEncoder = null;
 
-        private CameraThread(final Context parent, final CameraViewInterface cameraView) {
+        private CameraThread(final Context parent) {
             super("CameraThread");
             mWeakParent = new WeakReference<Context>(parent);
-            mWeakCameraView = new WeakReference<CameraViewInterface>(cameraView);
             loadSutterSound(parent);
             videoEncoder = new VideoEncoderFromBuffer(PREVIEW_WIDTH,
                     PREVIEW_HEIGHT);

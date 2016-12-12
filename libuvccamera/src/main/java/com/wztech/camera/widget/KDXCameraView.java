@@ -1,4 +1,4 @@
-package com.dreamguard.widget;
+package com.wztech.camera.widget;
 /*
  * UVCCamera
  * library and sample to access to UVC web camera on non-rooted Android device
@@ -32,9 +32,9 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.TextureView;
-
-import com.dreamguard.renderer.EGLBase;
-import com.dreamguard.renderer.GLDrawer2D;
+import com.dreamguard.widget.CameraViewInterface;
+import com.wztech.camera.renderer.EGLBase;
+import com.wztech.camera.renderer.GLDrawer2D;
 
 
 /**
@@ -43,7 +43,7 @@ import com.dreamguard.renderer.GLDrawer2D;
  * you can show this view in the center of screen and keep the aspect ratio of content
  * XXX it is better that can set the aspect raton a a xml property
  */
-public class UVCCameraTextureView extends TextureView	// API >= 14
+public class KDXCameraView extends TextureView	// API >= 14
 	implements TextureView.SurfaceTextureListener, CameraViewInterface {
 
 	private static final boolean DEBUG = true;	// TODO set false on release
@@ -56,15 +56,15 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
     private Bitmap mTempBitmap;
     private boolean mReqesutCaptureStillImage;
 
-	public UVCCameraTextureView(final Context context) {
+	public KDXCameraView(final Context context) {
 		this(context, null, 0);
 	}
 
-	public UVCCameraTextureView(final Context context, final AttributeSet attrs) {
+	public KDXCameraView(final Context context, final AttributeSet attrs) {
 		this(context, attrs, 0);
 	}
 
-	public UVCCameraTextureView(final Context context, final AttributeSet attrs, final int defStyle) {
+	public KDXCameraView(final Context context, final AttributeSet attrs, final int defStyle) {
 		super(context, attrs, defStyle);
 		setSurfaceTextureListener(this);
 	}
@@ -244,7 +244,7 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
 		private static final class RenderThread extends Thread {
 	    	private final Object mSync = new Object();
 	    	private final SurfaceTexture mSurface;
-	    	private RenderHandler mHandler;
+	    	private KDXCameraView.RenderHandler mHandler;
 	    	private EGLBase mEgl;
 	    	private EGLBase.EglSurface mEglSurface;
 	    	private GLDrawer2D mDrawer;
@@ -261,7 +261,7 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
 	    		setName("RenderThread");
 			}
 
-			public final RenderHandler getHandler() {
+			public final KDXCameraView.RenderHandler getHandler() {
 				if (DEBUG) Log.v(TAG, "RenderThread#getHandler:");
 	            synchronized (mSync) {
 	                // create rendering thread
@@ -356,7 +356,7 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
 	            init();
 	            Looper.prepare();
 	            synchronized (mSync) {
-	            	mHandler = new RenderHandler(this);
+	            	mHandler = new KDXCameraView.RenderHandler(this);
 	                mSync.notify();
 	            }
 

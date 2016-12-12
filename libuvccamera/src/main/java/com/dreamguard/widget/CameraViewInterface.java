@@ -26,7 +26,8 @@ package com.dreamguard.widget;
 import android.graphics.SurfaceTexture;
 
 
-public interface CameraViewInterface extends AspectRatioViewInterface {
+public interface CameraViewInterface {
+	public void setAspectRatio(double aspectRatio);
 	public SurfaceTexture getSurfaceTexture();
 	public boolean hasSurface();
 }
