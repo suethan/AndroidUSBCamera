@@ -5,7 +5,7 @@ package com.dreamguard.renderer;
  *
  * Copyright (c) 2014-2015 saki t_saki@serenegiant.com
  *
- * File name: GLDrawer2D.java
+ * File name: GLDrawerBase.java
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,13 +31,16 @@ import android.util.Log;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class to draw to whole view using specific texture and texture matrix
  */
-public class GLDrawer2D {
+public class GLDrawerBase {
 	private static final boolean DEBUG = true; // TODO set false on release
-	private static final String TAG = "GLDrawer2D";
+	private static final String TAG = "GLDrawerBase";
 
 	private static final String vss
 		= "uniform mat4 uMVPMatrix;\n"
@@ -78,7 +81,7 @@ public class GLDrawer2D {
 	 * Constructor
 	 * this should be called in GL context
 	 */
-	public GLDrawer2D() {
+	public GLDrawerBase() {
 		pVertex = ByteBuffer.allocateDirect(VERTEX_SZ * FLOAT_SZ)
 				.order(ByteOrder.nativeOrder()).asFloatBuffer();
 		pVertex.put(VERTICES);
@@ -88,12 +91,14 @@ public class GLDrawer2D {
 		pTexCoord.put(TEXCOORD);
 		pTexCoord.flip();
 
-		hProgram = loadShader(vss, fss);
+		hProgram = loadShader(getVertexShader(), getFragmentShader());
 		GLES20.glUseProgram(hProgram);
         maPositionLoc = GLES20.glGetAttribLocation(hProgram, "aPosition");
         maTextureCoordLoc = GLES20.glGetAttribLocation(hProgram, "aTextureCoord");
         muMVPMatrixLoc = GLES20.glGetUniformLocation(hProgram, "uMVPMatrix");
         muTexMatrixLoc = GLES20.glGetUniformLocation(hProgram, "uTexMatrix");
+
+		initParam(hProgram);
 
 		Matrix.setIdentityM(mMvpMatrix, 0);
         GLES20.glUniformMatrix4fv(muMVPMatrixLoc, 1, false, mMvpMatrix, 0);
@@ -123,9 +128,10 @@ public class GLDrawer2D {
 		if (tex_matrix != null)
 			GLES20.glUniformMatrix4fv(muTexMatrixLoc, 1, false, tex_matrix, 0);
 
+		setParam();
+
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, tex_id);
-		Log.d("daihl","daihl glDrawArrays");
 		GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, VERTEX_NUM);
 		GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0);
         GLES20.glUseProgram(0);
@@ -198,6 +204,25 @@ public class GLDrawer2D {
 		GLES20.glLinkProgram(program);
 
 		return program;
+	}
+
+	public String getVertexShader(){
+		return vss;
+	}
+
+	public String getFragmentShader(){
+		return fss;
+	}
+
+	public void initParam(int program){
+
+	}
+
+	public void setParam(){
+
+	}
+
+	public void updateParam(HashMap<String,String> param){
 	}
 
 }

@@ -7,7 +7,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.dreamguard.api.KDXCamera;
-import com.dreamguard.widget.CameraViewInterface;
+import com.dreamguard.api.CameraViewInterface;
+
+import java.util.HashMap;
 
 /**
  *  create by hailin.dai 2016.12.10.
@@ -24,12 +26,22 @@ public class USBCameraActivity extends AppCompatActivity {
     private KDXCamera camera;
 
     private Button record;
+
+    private Button captureStill;
+
+    private Button normal;
+
+    private Button stereo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_usbcamera);
         final View view = findViewById(R.id.camera_view);
         record = (Button) findViewById(R.id.record);
+        captureStill = (Button) findViewById(R.id.captureStill);
+        normal = (Button) findViewById(R.id.showNormal);
+        stereo = (Button) findViewById(R.id.showStereo);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -47,14 +59,13 @@ public class USBCameraActivity extends AppCompatActivity {
                 }
             }
         });
-        view.setOnLongClickListener(new View.OnLongClickListener() {
+
+        captureStill.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 if(camera.isCameraOpened()){
                     camera.captureStill();
-                    return true;
                 }
-                return false;
             }
         });
         record.setOnClickListener(new View.OnClickListener() {
@@ -68,11 +79,30 @@ public class USBCameraActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         mUVCCameraView = (CameraViewInterface)view;
         mUVCCameraView.setAspectRatio(PREVIEW_WIDTH/2 / (float)PREVIEW_HEIGHT);
         camera = new KDXCamera();
         camera.init(this);
 
+
+        normal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String ,String> rendererMode = new HashMap<String, String>();
+                rendererMode.put("rendererMode","0");
+                mUVCCameraView.setRendererParam(rendererMode);
+            }
+        });
+        stereo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                HashMap<String ,String> rendererMode = new HashMap<String, String>();
+                rendererMode.put("rendererMode","1");
+                mUVCCameraView.setRendererParam(rendererMode);
+            }
+        });
     }
 
     private void hideSystemUI() {
@@ -102,4 +132,6 @@ public class USBCameraActivity extends AppCompatActivity {
         super.onDestroy();
         camera.destroy();
     }
+
+
 }

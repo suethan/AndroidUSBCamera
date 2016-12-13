@@ -1,10 +1,15 @@
 package com.dreamguard.renderer;
 
 import android.graphics.SurfaceTexture;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hailin.dai on 12/12/16.
@@ -18,8 +23,8 @@ public class RenderHandler extends Handler
     private static final String TAG = "RenderHandler";
 
     private static final int MSG_REQUEST_RENDER = 1;
-    private static final int MSG_SET_ENCODER = 2;
-    private static final int MSG_CREATE_SURFACE = 3;
+    private static final int MSG_CREATE_SURFACE = 2;
+    private static final int MSG_UPDATE_PARAM = 3;
     private static final int MSG_TERMINATE = 9;
 
     private RendererThread mThread;
@@ -44,7 +49,6 @@ public class RenderHandler extends Handler
                 mThread.mSync.wait();
             } catch (final InterruptedException e) {
             }
-            if (DEBUG) Log.v(TAG, "getPreviewTexture:" + mThread.mPreviewSurface);
             return mThread.mPreviewSurface;
         }
     }
@@ -55,9 +59,18 @@ public class RenderHandler extends Handler
         if (mIsActive) {
             mIsActive = false;
             removeMessages(MSG_REQUEST_RENDER);
-            removeMessages(MSG_SET_ENCODER);
+            removeMessages(MSG_UPDATE_PARAM);
             sendEmptyMessage(MSG_TERMINATE);
         }
+    }
+
+    public final void updateRendererParam(HashMap<String,String> param){
+        Message message = new Message();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("data",param);
+        message.what = MSG_UPDATE_PARAM;
+        message.setData(bundle);
+        sendMessage(message);
     }
 
     @Override
@@ -73,10 +86,11 @@ public class RenderHandler extends Handler
             case MSG_REQUEST_RENDER:
                 mThread.onDrawFrame();
                 break;
-            case MSG_SET_ENCODER:
-                break;
             case MSG_CREATE_SURFACE:
                 mThread.updatePreviewSurface();
+                break;
+            case MSG_UPDATE_PARAM:
+                mThread.updateRendererParam((HashMap) msg.getData().get("data"));
                 break;
             case MSG_TERMINATE:
                 Looper.myLooper().quit();

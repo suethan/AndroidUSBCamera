@@ -24,18 +24,15 @@ package com.dreamguard.widget;
 */
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.TextureView;
 
-import com.dreamguard.renderer.EGLBase;
-import com.dreamguard.renderer.GLDrawer2D;
+import com.dreamguard.api.CameraViewInterface;
 import com.dreamguard.renderer.RenderHandler;
+
+import java.util.HashMap;
 
 
 /**
@@ -53,9 +50,6 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
     private double mRequestedAspect = -1.0;
     private boolean mHasSurface;
     private RenderHandler mRenderHandler;
-    private final Object mCaptureSync = new Object();
-    private Bitmap mTempBitmap;
-    private boolean mReqesutCaptureStillImage;
 
 	public UVCCameraTextureView(final Context context) {
 		this(context, null, 0);
@@ -139,16 +133,7 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
 
 	@Override
 	public void onSurfaceTextureUpdated(final SurfaceTexture surface) {
-		synchronized (mCaptureSync) {
-			if (mReqesutCaptureStillImage) {
-				mReqesutCaptureStillImage = false;
-				if (mTempBitmap == null)
-					mTempBitmap = getBitmap();
-				else
-					getBitmap(mTempBitmap);
-				mCaptureSync.notifyAll();
-			}
-		}
+		Log.d(TAG,"onSurfaceTextureUpdated");
 	}
 
 	@Override
@@ -163,4 +148,10 @@ public class UVCCameraTextureView extends TextureView	// API >= 14
 		return mRenderHandler != null ? mRenderHandler.getPreviewTexture() : super.getSurfaceTexture();
 	}
 
+	@Override
+	public void setRendererParam(HashMap<String,String> param) {
+		if(mRenderHandler != null){
+			mRenderHandler.updateRendererParam(param);
+		}
+	}
 }

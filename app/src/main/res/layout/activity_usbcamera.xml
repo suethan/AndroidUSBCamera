@@ -17,6 +17,28 @@
         android:id="@+id/record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/camera"/>
+        android:text="@string/capture"/>
+
+    <Button
+        android:id="@+id/captureStill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capture_still"
+        android:layout_below="@+id/record"/>
+
+    <Button
+        android:id="@+id/showNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_normal"
+        android:layout_alignParentRight="true"/>
+
+    <Button
+        android:id="@+id/showStereo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/show_stereo"
+        android:layout_below="@+id/showNormal"
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>

@@ -4,6 +4,9 @@ import android.graphics.SurfaceTexture;
 import android.os.Looper;
 import android.util.Log;
 
+
+import java.util.HashMap;
+
 /**
  * Created by hailin.dai on 12/12/16.
  * email:hailin.dai@wz-tech.com
@@ -20,7 +23,7 @@ public class RendererThread extends Thread {
     private RenderHandler mHandler;
     private EGLBase mEgl;
     private EGLBase.EglSurface mEglSurface;
-    private GLDrawer2D mDrawer;
+    private GLDrawerBase mDrawer;
     private int mTexId = -1;
     protected SurfaceTexture mPreviewSurface;
     private final float[] mStMatrix = new float[16];
@@ -59,10 +62,10 @@ public class RendererThread extends Thread {
             }
             mEglSurface.makeCurrent();
             if (mTexId >= 0) {
-                GLDrawer2D.deleteTex(mTexId);
+                GLDrawerBase.deleteTex(mTexId);
             }
             // create texture and SurfaceTexture for input from camera
-            mTexId = GLDrawer2D.initTex();
+            mTexId = GLDrawerBase.initTex();
             if (DEBUG) Log.v(TAG, "getPreviewSurface:tex_id=" + mTexId);
             mPreviewSurface = new SurfaceTexture(mTexId);
             mPreviewSurface.setOnFrameAvailableListener(mHandler);
@@ -71,9 +74,6 @@ public class RendererThread extends Thread {
         }
     }
 
-    /**
-     * draw a frame (and request to draw for video capturing if it is necessary)
-     */
     public final void onDrawFrame() {
         mEglSurface.makeCurrent();
         // update texture(came from camera)
@@ -84,6 +84,11 @@ public class RendererThread extends Thread {
         mDrawer.draw(mTexId, mStMatrix);
         mEglSurface.swap();
 
+    }
+
+    public final void updateRendererParam(HashMap<String,String> param){
+
+        mDrawer.updateParam(param);
     }
 
     @Override
@@ -113,7 +118,7 @@ public class RendererThread extends Thread {
         mEglSurface = mEgl.createFromSurface(mSurface);
         mEglSurface.makeCurrent();
         // create drawing object
-        mDrawer = new GLDrawer2D();
+        mDrawer = new GLDrawerBase();
     }
 
     private final void release() {
@@ -127,7 +132,7 @@ public class RendererThread extends Thread {
             mPreviewSurface = null;
         }
         if (mTexId >= 0) {
-            GLDrawer2D.deleteTex(mTexId);
+            GLDrawerBase.deleteTex(mTexId);
             mTexId = -1;
         }
         if (mEglSurface != null) {

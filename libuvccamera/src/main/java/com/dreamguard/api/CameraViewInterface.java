@@ -1,4 +1,4 @@
-package com.dreamguard.widget;
+package com.dreamguard.api;
 /*
  * UVCCamera
  * library and sample to access to UVC web camera on non-rooted Android device
@@ -25,9 +25,14 @@ package com.dreamguard.widget;
 
 import android.graphics.SurfaceTexture;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 
 public interface CameraViewInterface {
 	public void setAspectRatio(double aspectRatio);
 	public SurfaceTexture getSurfaceTexture();
 	public boolean hasSurface();
+	public void setRendererParam(HashMap<String,String> param);
 }
