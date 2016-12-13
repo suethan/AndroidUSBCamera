@@ -15,9 +15,9 @@ import com.dreamguard.widget.CameraViewInterface;
 public class USBCameraActivity extends AppCompatActivity {
 
 
-    private static final int PREVIEW_WIDTH = 640;
+    private static final int PREVIEW_WIDTH = 2560;
 
-    private static final int PREVIEW_HEIGHT = 480;
+    private static final int PREVIEW_HEIGHT = 720;
 
     private CameraViewInterface mUVCCameraView;
 
