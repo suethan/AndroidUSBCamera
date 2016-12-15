@@ -59,6 +59,21 @@ public class KDXCamera {
     public void setPreviewSize(int width, int height) {
         CameraHandler.PREVIEW_WIDTH = width;
         CameraHandler.PREVIEW_HEIGHT = height;
+        CameraHandler.CAPTURE_WIDTH = width;
+        CameraHandler.CAPTURE_HEIGHT = height;
+        CameraHandler.RECORD_WIDTH = width;
+        CameraHandler.RECORD_HEIGHT = height;
+
+
+
+    }
+
+    public void setCameraType(CameraType cameraType){
+        if(cameraType == CameraType.C3D_NORMAL){
+            CameraHandler.is3D = false;
+        }else {
+            CameraHandler.is3D = true;
+        }
     }
 
     public void setPreviewTexture(SurfaceTexture surfaceTexture){

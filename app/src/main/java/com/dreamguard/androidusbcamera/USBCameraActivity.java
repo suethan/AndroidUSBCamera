@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.dreamguard.api.CameraType;
 import com.dreamguard.api.KDXCamera;
 import com.dreamguard.api.CameraViewInterface;
 
@@ -64,6 +65,7 @@ public class USBCameraActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(camera.isCameraOpened()){
+                    Toast.makeText(USBCameraActivity.this, "Captured", Toast.LENGTH_SHORT).show();
                     camera.captureStill();
                 }
             }
@@ -85,7 +87,7 @@ public class USBCameraActivity extends AppCompatActivity {
         mUVCCameraView.setAspectRatio(PREVIEW_WIDTH/2 / (float)PREVIEW_HEIGHT);
         camera = new KDXCamera();
         camera.init(this);
-
+        camera.setCameraType(CameraType.C3D_SBS);
 
         normal.setOnClickListener(new View.OnClickListener() {
             @Override

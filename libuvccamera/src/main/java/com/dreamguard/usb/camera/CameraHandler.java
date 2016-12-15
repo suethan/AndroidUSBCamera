@@ -58,6 +58,17 @@ public class CameraHandler extends Handler {
      * {@link UVCCamera#setPreviewSize(int, int, int)} throw exception
      * 0:YUYV, other:MJPEG
      */
+
+    public static int RECORD_WIDTH = 640;
+
+    public static int RECORD_HEIGHT = 480;
+
+    public static int CAPTURE_WIDTH = 640;
+
+    public static int CAPTURE_HEIGHT = 480;
+
+    public static boolean is3D = false;
+
     private static final int PREVIEW_MODE = 1;
 
 
@@ -203,8 +214,6 @@ public class CameraHandler extends Handler {
             super("CameraThread");
             mWeakParent = new WeakReference<Context>(parent);
             loadSutterSound(parent);
-            videoEncoder = new VideoEncoderFromBuffer(PREVIEW_WIDTH,
-                    PREVIEW_HEIGHT);
         }
 
         @Override
@@ -266,7 +275,14 @@ public class CameraHandler extends Handler {
                 }
             }
             if (mUVCCamera != null) {
-                mUVCCamera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_YUV420SP);
+                if(is3D) {
+                    CAPTURE_WIDTH = PREVIEW_WIDTH/2;
+                    RECORD_WIDTH = PREVIEW_WIDTH/2;
+                    mUVCCamera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_NV21_HALF);
+                }else {
+                    mUVCCamera.setFrameCallback(mIFrameCallback, UVCCamera.PIXEL_FORMAT_NV21);
+
+                }
                 mUVCCamera.setPreviewDisplay(surface);
                 mUVCCamera.startPreview();
             }
@@ -290,12 +306,15 @@ public class CameraHandler extends Handler {
         public void handleStartRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
             mIsRecording = true;
+            videoEncoder = new VideoEncoderFromBuffer(RECORD_WIDTH,
+                    RECORD_HEIGHT);
         }
 
         public void handleStopRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStopRecording:");
             if(mIsRecording) {
                 videoEncoder.close();
+                videoEncoder = null;
             }
             mIsRecording = false;
         }
@@ -356,14 +375,14 @@ public class CameraHandler extends Handler {
             mSoundPool.play(mSoundId, 0.2f, 0.2f, 0, 0, 1.0f);
             File outputFile = null;
             BufferedOutputStream os = null;
-            int rgb[] = new int[PREVIEW_WIDTH*PREVIEW_HEIGHT];
+            int rgb[] = new int[CAPTURE_WIDTH*CAPTURE_HEIGHT];
             try {
                 outputFile = new File(Environment.getExternalStorageDirectory().getPath() + "/K3DX/" + System.currentTimeMillis() + ".jpg");
                 os = new BufferedOutputStream(new FileOutputStream(outputFile));
-                byte buf[] = new byte[PREVIEW_WIDTH*PREVIEW_HEIGHT*3/2];
+                byte buf[] = new byte[CAPTURE_WIDTH*CAPTURE_HEIGHT*3/2];
                 frame.get(buf);
-                ImageProc.decodeYUV420SP(rgb,buf,PREVIEW_WIDTH,PREVIEW_HEIGHT);
-                Bitmap bitmap = Bitmap.createBitmap(rgb,PREVIEW_WIDTH, PREVIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+                ImageProc.decodeYUV420SP(rgb,buf,CAPTURE_WIDTH,CAPTURE_HEIGHT);
+                Bitmap bitmap = Bitmap.createBitmap(rgb,CAPTURE_WIDTH, CAPTURE_HEIGHT, Bitmap.Config.ARGB_8888);
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
                 os.flush();
                 os.close();
@@ -385,7 +404,7 @@ public class CameraHandler extends Handler {
                 }
                 if(isRecording()){
                     long startTime = System.currentTimeMillis();
-                    byte buf[] = new byte[PREVIEW_WIDTH*PREVIEW_HEIGHT*3/2];
+                    byte buf[] = new byte[PREVIEW_WIDTH/2*PREVIEW_HEIGHT*3/2];
                     frame.get(buf);
                     videoEncoder.encodeFrame(buf);
                     long endTime = System.currentTimeMillis();
