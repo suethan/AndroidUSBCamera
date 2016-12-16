@@ -19,13 +19,12 @@ import android.view.Surface;
 
 
 import com.dreamguard.api.R;
-import com.dreamguard.encoder.VideoEncoderFromBuffer;
+import com.dreamguard.encoder.MediaMuxerRunnable;
 import com.dreamguard.usb.detect.USBMonitor;
 import com.dreamguard.util.ImageProc;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -208,7 +207,7 @@ public class CameraHandler extends Handler {
          * muxer for audio/video recording
          */
 
-        private VideoEncoderFromBuffer videoEncoder = null;
+
 
         private CameraThread(final Context parent) {
             super("CameraThread");
@@ -306,15 +305,18 @@ public class CameraHandler extends Handler {
         public void handleStartRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
             mIsRecording = true;
-            videoEncoder = new VideoEncoderFromBuffer(RECORD_WIDTH,
-                    RECORD_HEIGHT);
+            //start
+
+            MediaMuxerRunnable.startMuxer();
+
+
         }
 
         public void handleStopRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStopRecording:");
             if(mIsRecording) {
-                videoEncoder.close();
-                videoEncoder = null;
+                //stop
+                MediaMuxerRunnable.stopMuxer();
             }
             mIsRecording = false;
         }
@@ -343,6 +345,7 @@ public class CameraHandler extends Handler {
             if (!mIsRecording)
                 Looper.myLooper().quit();
         }
+
 
         /**
          * prepare and load shutter sound for still image capturing
@@ -398,7 +401,7 @@ public class CameraHandler extends Handler {
         private final IFrameCallback mIFrameCallback = new IFrameCallback() {
             @Override
             public void onFrame(final ByteBuffer frame) {
-                Log.d(TAG,"onFrame");
+
                 if(isCaptureStill) {
                     captureStill(frame);
                 }
@@ -406,10 +409,13 @@ public class CameraHandler extends Handler {
                     long startTime = System.currentTimeMillis();
                     byte buf[] = new byte[PREVIEW_WIDTH/2*PREVIEW_HEIGHT*3/2];
                     frame.get(buf);
-                    videoEncoder.encodeFrame(buf);
+//                    videoEncoder.encodeFrame(buf);
+                    MediaMuxerRunnable.addVideoFrameData(buf);
                     long endTime = System.currentTimeMillis();
                     Log.i(TAG, Integer.toString((int)(endTime-startTime)) + "ms");
                 }
+
+
             }
         };
 

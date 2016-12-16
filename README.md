@@ -52,6 +52,10 @@ android usb camera on non-rooted Android devices.<br/>
     camera.destroy();
 
 
+<h2>refer</h2>
+http://bigflake.com/mediacodec/
+
+
 
 
 
