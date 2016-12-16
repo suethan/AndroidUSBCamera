@@ -20,9 +20,9 @@ import java.util.List;
  * Created by hailin on 2016/12/10.
  */
 
-public class KDXCamera {
+public class USBCamera {
 
-    private final static String TAG = "KDXCamera";
+    private final static String TAG = "USBCamera";
     /**
      * for accessing USB
      */

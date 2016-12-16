@@ -3,15 +3,11 @@ package com.dreamguard.androidusbcamera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.dreamguard.api.CameraType;
-import com.dreamguard.api.KDXCamera;
-import com.dreamguard.api.CameraViewInterface;
+import com.dreamguard.api.USBCamera;
 import com.dreamguard.widget.UVCCameraTextureView;
-
-import java.util.HashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,7 +23,7 @@ public class USBCameraActivity extends AppCompatActivity {
 
     private static final int PREVIEW_HEIGHT = 720;
 
-    private KDXCamera camera;
+    private USBCamera camera;
 
     @Bind(R.id.camera_view)
     protected UVCCameraTextureView mCameraView;
@@ -76,7 +72,7 @@ public class USBCameraActivity extends AppCompatActivity {
 
         mCameraView.setAspectRatio(PREVIEW_WIDTH / (float)PREVIEW_HEIGHT);
 
-        camera = new KDXCamera();
+        camera = new USBCamera();
         camera.init(this);
         camera.setCameraType(CameraType.C3D_SBS);
 

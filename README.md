@@ -8,7 +8,7 @@ android usb camera on non-rooted Android devices.<br/>
 
     mCameraView.setAspectRatio(PREVIEW_WIDTH / (float)PREVIEW_HEIGHT);
 
-    camera = new KDXCamera();
+    camera = new USBCamera();
     camera.init(this);
     camera.setCameraType(CameraType.C3D_SBS);
 
