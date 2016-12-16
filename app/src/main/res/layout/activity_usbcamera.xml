@@ -13,32 +13,36 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true" />
 
-    <Button
-        android:id="@+id/record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/capture"/>
+
 
     <Button
         android:id="@+id/captureStill"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/capture_still"
-        android:layout_below="@+id/record"/>
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"/>
 
     <Button
-        android:id="@+id/showNormal"
+        android:id="@+id/record"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/show_normal"
-        android:layout_alignParentRight="true"/>
+        android:text="@string/capture"
+        android:layout_alignParentRight="true"
+        android:layout_above="@+id/captureStill"/>
 
     <Button
-        android:id="@+id/showStereo"
+        android:id="@+id/open"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/show_stereo"
-        android:layout_below="@+id/showNormal"
-        android:layout_alignParentRight="true"/>
+        android:text="@string/open"
+        android:layout_alignParentBottom="true"/>
+
+    <Button
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/close"
+        android:layout_above="@+id/open" />
 
 </RelativeLayout>

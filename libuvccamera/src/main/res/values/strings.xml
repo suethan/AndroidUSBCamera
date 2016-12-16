@@ -31,6 +31,6 @@
     <string name="no_device">未发现 USB 摄像头</string>
     <string name="capture">录制</string>
     <string name="capture_still">拍照</string>
-    <string name="show_normal">2D</string>
-    <string name="show_stereo">3D</string>
+    <string name="open">打开</string>
+    <string name="close">关闭</string>
 </resources>
