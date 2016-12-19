@@ -66,6 +66,10 @@ http://bigflake.com/mediacodec/
         原始数据。
         预览画面显示的数据。
 
+<h2>讨论</h2>
+
+	QQ群：199324650
+
 
 
 
