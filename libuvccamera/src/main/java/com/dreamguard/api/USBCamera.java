@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.Surface;
 import android.widget.Toast;
 
-import com.dreamguard.api.R;
 import com.dreamguard.usb.camera.CameraHandler;
 import com.dreamguard.usb.detect.DeviceFilter;
 import com.dreamguard.usb.detect.USBMonitor;

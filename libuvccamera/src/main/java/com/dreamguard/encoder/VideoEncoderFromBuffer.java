@@ -3,7 +3,6 @@ package com.dreamguard.encoder;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import android.annotation.SuppressLint;
 import android.media.MediaCodec;

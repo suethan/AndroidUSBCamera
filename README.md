@@ -55,15 +55,16 @@ android usb camera on non-rooted Android devices.<br/>
 <h2>Refer</h2>
 http://bigflake.com/mediacodec/
 
-<h2>Todo
-1.同时录制视频和声音。
-	需要常见的宽高比例，如果是双摄像头，目前简易做法，camera.setCameraType(CameraType.C3D_SBS)，将全宽图片压缩为半宽。
-2.编写Camera应用，测试插件。
-3.优化压缩方式。
-4.支持多种预览方式。
-5.支持两种拍摄和录制方式
-	原始数据。
-	预览画面显示的数据。
+<h2>Todo</h2>
+
+    1.同时录制视频和声音。
+        需要常见的宽高比例，如果是双摄像头，目前简易做法，camera.setCameraType(CameraType.C3D_SBS)，将全宽图片压缩为半宽。
+    2.编写Camera应用，测试插件。
+    3.优化压缩方式。
+    4.支持多种预览方式。
+    5.支持两种拍摄和录制方式
+        原始数据。
+        预览画面显示的数据。
 
 
 
