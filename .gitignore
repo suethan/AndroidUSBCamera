@@ -12,6 +12,5 @@
 app/build
 libuvccamera/build
 libuvccamera/src/main/obj
-libuvccamera/src/main/jnibak
 libuvccamera/src/main/com/wztech
 
