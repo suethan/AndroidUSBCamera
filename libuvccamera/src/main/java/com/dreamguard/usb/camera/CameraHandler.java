@@ -18,13 +18,17 @@ import android.util.Log;
 import android.view.Surface;
 
 import com.dreamguard.api.R;
-import com.dreamguard.encoder.VideoEncoderFromBuffer;
+import com.dreamguard.encoder.MediaAudioEncoder;
+import com.dreamguard.encoder.MediaEncoder;
+import com.dreamguard.encoder.MediaMuxerWrapper;
+import com.dreamguard.encoder.MediaVideoEncoder;
 import com.dreamguard.usb.detect.USBMonitor;
 import com.dreamguard.util.ImageProc;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -205,7 +209,9 @@ public class CameraHandler extends Handler {
          * muxer for audio/video recording
          */
 
-        private VideoEncoderFromBuffer videoEncoder = null;
+        private MediaMuxerWrapper mMuxer;
+
+        private MediaVideoEncoder videoEncoder;
 
         private CameraThread(final Context parent) {
             super("CameraThread");
@@ -302,19 +308,49 @@ public class CameraHandler extends Handler {
 
         public void handleStartRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStartRecording:");
-            mIsRecording = true;
-            videoEncoder = new VideoEncoderFromBuffer(RECORD_WIDTH,
-                    RECORD_HEIGHT);
+
+            if (mMuxer == null) {
+                try {
+                    mMuxer = new MediaMuxerWrapper(".mp4");    // if you record audio only, ".m4a" is also OK.
+                    if (true) {
+                        // for video capturing
+                        videoEncoder = new MediaVideoEncoder(mMuxer, mMediaEncoderListener, RECORD_WIDTH,RECORD_HEIGHT);
+                    }
+                    if (true) {
+                        // for audio capturing
+                        new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
+                    }
+                    mMuxer.prepare();
+                    mMuxer.startRecording();
+                } catch (final IOException e) {
+                }
+            }
         }
 
         public void handleStopRecording() {
             if (DEBUG) Log.v(TAG_THREAD, "handleStopRecording:");
-            if(mIsRecording) {
-                videoEncoder.close();
-                videoEncoder = null;
+            if (mMuxer != null) {
+                mMuxer.stopRecording();
+                mMuxer = null;
+                // you should not wait here
             }
-            mIsRecording = false;
         }
+
+        /**
+         * callback methods from encoder
+         */
+        private final MediaEncoder.MediaEncoderListener mMediaEncoderListener = new MediaEncoder.MediaEncoderListener() {
+            @Override
+            public void onPrepared(final MediaEncoder encoder) {
+                mIsRecording = true;
+            }
+
+            @Override
+            public void onStopped(final MediaEncoder encoder) {
+                mIsRecording = false;
+            }
+        };
+
 
         public void handleUpdateMedia(final String path) {
             if (DEBUG) Log.v(TAG_THREAD, "handleUpdateMedia:path=" + path);
@@ -374,7 +410,7 @@ public class CameraHandler extends Handler {
             BufferedOutputStream os = null;
             int rgb[] = new int[CAPTURE_WIDTH*CAPTURE_HEIGHT];
             try {
-                outputFile = new File(Environment.getExternalStorageDirectory().getPath() + "/K3DX/" + System.currentTimeMillis() + ".jpg");
+                outputFile = new File(Environment.getExternalStorageDirectory().getPath() + "/Movies/" + System.currentTimeMillis() + ".jpg");
                 os = new BufferedOutputStream(new FileOutputStream(outputFile));
                 byte buf[] = new byte[CAPTURE_WIDTH*CAPTURE_HEIGHT*3/2];
                 frame.get(buf);
@@ -395,13 +431,13 @@ public class CameraHandler extends Handler {
         private final IFrameCallback mIFrameCallback = new IFrameCallback() {
             @Override
             public void onFrame(final ByteBuffer frame) {
-                Log.d(TAG,"onFrame");
+//                Log.d(TAG,"onFrame");
                 if(isCaptureStill) {
                     captureStill(frame);
                 }
                 if(isRecording()){
                     long startTime = System.currentTimeMillis();
-                    byte buf[] = new byte[PREVIEW_WIDTH/2*PREVIEW_HEIGHT*3/2];
+                    byte buf[] = new byte[RECORD_WIDTH*RECORD_HEIGHT*3/2];
                     frame.get(buf);
                     videoEncoder.encodeFrame(buf);
                     long endTime = System.currentTimeMillis();
@@ -409,6 +445,8 @@ public class CameraHandler extends Handler {
                 }
             }
         };
+
+
 
         @Override
         public void run() {

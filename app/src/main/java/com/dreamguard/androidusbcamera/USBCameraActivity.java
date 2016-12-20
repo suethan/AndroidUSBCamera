@@ -74,7 +74,7 @@ public class USBCameraActivity extends AppCompatActivity {
 
         camera = new USBCamera();
         camera.init(this);
-        camera.setCameraType(CameraType.C3D_SBS);
+//        camera.setCameraType(CameraType.C3D_SBS);
 
     }
 
