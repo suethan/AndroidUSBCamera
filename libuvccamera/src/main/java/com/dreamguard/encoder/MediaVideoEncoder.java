@@ -87,8 +87,6 @@ public class MediaVideoEncoder extends MediaEncoder {
         format.setInteger(MediaFormat.KEY_BIT_RATE, calcBitRate());
         format.setInteger(MediaFormat.KEY_FRAME_RATE, FRAME_RATE);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 10);
-		format.setInteger(MediaFormat.KEY_MAX_WIDTH,2560);
-		format.setInteger(MediaFormat.KEY_MAX_HEIGHT,720);
 		if (DEBUG) Log.i(TAG, "format: " + format);
 
 		boolean ret = videoCodecInfo.getCapabilitiesForType(MIME_TYPE).isFormatSupported(format);
@@ -196,7 +194,6 @@ public class MediaVideoEncoder extends MediaEncoder {
             for (int j = 0; j < types.length; j++) {
                 if (types[j].equalsIgnoreCase(mimeType)) {
                 	if (DEBUG) Log.i(TAG, "codec:" + codecInfo.getName() + ",MIME=" + types[j]);
-					codecInfo.getCapabilitiesForType(types[j]);
 					return codecInfo;
                 }
             }

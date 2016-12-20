@@ -55,6 +55,20 @@ android usb camera on non-rooted Android devices.<br/>
 <h2>Refer</h2>
 http://bigflake.com/mediacodec/
 
+<h2>注意:</h2>
+
+    PREVIEW_WIDTH、PREVIEW_HEIGHT的大小和外接摄像头，手机硬件编码器有关。
+    不合适的值，可能会发生错误。
+	常见值：
+		标清:480P   640*480
+		高清:720P	1280*720
+		超清:1080P	1920*1080
+	如果是双摄：
+		标清:480P   1280*480
+		高清:720P	2560*720
+		超清:1080P	3840*1080
+    	并调用，camera.setCameraType(CameraType.C3D_SBS)
+
 <h2>Todo</h2>
 
     1.同时录制视频和声音。
