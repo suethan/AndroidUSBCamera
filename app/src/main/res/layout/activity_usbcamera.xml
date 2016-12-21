@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_usbcamera"
     android:layout_width="match_parent"
@@ -10,39 +10,88 @@
         android:id="@+id/camera_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
+        android:layout_gravity="center" />
 
+    <ImageView
+        android:id="@+id/welcomeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/captureStill"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/capture_still"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"/>
+        <RelativeLayout
+            android:id="@+id/topRly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/QUATER_CLEAR_BLACK"
+            android:layout_alignParentTop="true">
 
-    <Button
-        android:id="@+id/record"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/capture"
-        android:layout_alignParentRight="true"
-        android:layout_above="@+id/captureStill"/>
+            <ImageView
+                android:id="@+id/openLight"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="20dp"
+                android:background="@color/TRANSPARENT"
+                android:src="@drawable/camera_flash_off" />
 
-    <Button
-        android:id="@+id/open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/open"
-        android:layout_alignParentBottom="true"/>
+            <ImageView
+                android:id="@+id/cameraSwitch"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="20dp"
+                android:background="@color/TRANSPARENT"
+                android:src="@drawable/camera_flip" />
+        </RelativeLayout>
 
-    <Button
-        android:id="@+id/close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/close"
-        android:layout_above="@+id/open" />
+        <RelativeLayout
+            android:id="@+id/bootomRly"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/QUATER_CLEAR_BLACK"
+            android:gravity="center_vertical">
 
-</RelativeLayout>
+            <ImageView
+                android:id="@+id/lookPictureIv"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="20dp"
+                android:padding="5dp"
+                android:src="@drawable/camera_library" />
+
+            <Button
+                android:id="@+id/takeContent"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerInParent="true"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/ic_switch_camera" />
+
+            <ImageView
+                android:id="@+id/cameraOnOff"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:padding="5dp"
+                android:src="@drawable/camera_close" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/focus_index"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_above="@+id/bootomRly"
+            android:background="@drawable/cam_focus"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+</FrameLayout>

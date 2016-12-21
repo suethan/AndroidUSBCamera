@@ -318,7 +318,7 @@ public class CameraHandler extends Handler {
                     }
                     if (true) {
                         // for audio capturing
-                        new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
+//                        new MediaAudioEncoder(mMuxer, mMediaEncoderListener);
                     }
                     mMuxer.prepare();
                     mMuxer.startRecording();

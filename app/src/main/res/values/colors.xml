@@ -34,6 +34,7 @@
 <color name="CLEAR">#00000000</color>
 <color name="HALF_CLEAR_WHITE">#7fffffff</color>
 <color name="QUATER_CLEAR_WHITE">#3fffffff</color>
+<color name="QUATER_CLEAR_BLACK">#5f000000</color>
 <color name="TRANSPARENT">#00000000</color>
 <color name="BLACK">#ff000000</color>
 <color name="ALICEBLUE">#fff0f8ff</color>
