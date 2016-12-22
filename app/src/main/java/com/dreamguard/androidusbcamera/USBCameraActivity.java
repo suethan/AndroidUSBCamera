@@ -44,13 +44,21 @@ public class USBCameraActivity extends AppCompatActivity {
     @Bind(R.id.welcomeView)
     protected ImageView mWelcomeView;
 
+
+
     @OnClick(R.id.lookPictureIv) void lookPicture(){
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
-        intent.setType("image/*");
-//        intent.setDataAndType(Uri.fromFile(file), "image/*");
-        startActivity(intent);
+        Intent intent = this.getPackageManager().getLaunchIntentForPackage("com.wztech.gallery");
+        if(intent!=null)
+        {
+            startActivity(intent);
+        }
+        else
+        {
+
+        }
     }
+
+
 
 
     @OnClick(R.id.cameraOnOff) void OnOff(){
@@ -72,13 +80,19 @@ public class USBCameraActivity extends AppCompatActivity {
         }
     }
 
+    @OnClick(R.id.back) void back(){
+        this.finish();
+    }
+
     @OnClick(R.id.cameraSwitch) void cameraSwitch(){
-        if(cameraMode == 0){
-            cameraMode = 1;
-            mTakeContent.setBackgroundResource(R.drawable.ic_switch_video);
-        }else {
-            cameraMode = 0;
-            mTakeContent.setBackgroundResource(R.drawable.ic_switch_camera);
+        if(camera.isCameraOpened()) {
+            if (cameraMode == 0) {
+                cameraMode = 1;
+                mTakeContent.setBackgroundResource(R.drawable.ic_switch_video);
+            } else {
+                cameraMode = 0;
+                mTakeContent.setBackgroundResource(R.drawable.ic_switch_camera);
+            }
         }
     }
 
@@ -107,7 +121,7 @@ public class USBCameraActivity extends AppCompatActivity {
 
         camera = new USBCamera();
         camera.init(this);
-        camera.setCameraType(CameraType.C3D_SBS);
+//        camera.setCameraType(CameraType.C3D_SBS);
 
     }
 

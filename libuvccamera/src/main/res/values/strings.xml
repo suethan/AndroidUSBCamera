@@ -33,4 +33,6 @@
     <string name="capture_still">拍照</string>
     <string name="open">打开</string>
     <string name="close">关闭</string>
+    <string name="usb">USB拍摄</string>
+    <string name="internal_camera">内置拍摄</string>
 </resources>

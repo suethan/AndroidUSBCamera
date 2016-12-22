@@ -30,12 +30,12 @@
             android:layout_alignParentTop="true">
 
             <ImageView
-                android:id="@+id/openLight"
+                android:id="@+id/back"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_margin="20dp"
                 android:background="@color/TRANSPARENT"
-                android:src="@drawable/camera_flash_off" />
+                android:src="@drawable/back" />
 
             <ImageView
                 android:id="@+id/cameraSwitch"

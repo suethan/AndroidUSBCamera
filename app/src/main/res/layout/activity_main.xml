@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -11,8 +11,15 @@
     tools:context="com.dreamguard.androidusbcamera.MainActivity">
 
     <Button
+        android:id="@+id/usbCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/usbCamera"
-        android:text="@string/camera"/>
-</RelativeLayout>
+        android:text="@string/usb"/>
+
+    <Button
+        android:id="@+id/camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/internal_camera"/>
+
+</LinearLayout>
